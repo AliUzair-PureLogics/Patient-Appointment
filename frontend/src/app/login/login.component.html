@@ -1,13 +1,75 @@
-<div>
-  <form (ngSubmit)="doLogin()">
-    <div>
-      Username: <input type="text" name="person_username" [(ngModel)]="person.username" placeholder="Enter Username" autocomplete="off">
+<div class="auth-page">
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-6 offset-md-3 col-xs-12">
+        <h1 class="text-xs-center">{{ title }}</h1>
+        <p class="text-xs-center">
+          <a [routerLink]="['/login']" *ngIf="authType == 'register'"
+            >Have an account?</a
+          >
+          <a [routerLink]="['/register']" *ngIf="authType == 'login'"
+            >Need an account?</a
+          >
+        </p>
+        <app-list-errors [errors]="errors"></app-list-errors>
+        <form [formGroup]="authForm" (ngSubmit)="submitForm()">
+          <fieldset [disabled]="isSubmitting">
+            <fieldset class="form-group">
+              <input
+                formControlName="username"
+                placeholder="Username"
+                class="form-control form-control-lg"
+                type="text"
+                *ngIf="authType == 'register'"
+              />
+            </fieldset>
+            <fieldset class="form-group">
+              <input
+                formControlName="email"
+                placeholder="Email"
+                class="form-control form-control-lg"
+                type="text"
+              />
+            </fieldset>
+            <fieldset class="form-group">
+              <input
+                formControlName="password"
+                placeholder="Password"
+                class="form-control form-control-lg"
+                type="password"
+              />
+            </fieldset>
+            <button class="btn btn-lg btn-primary pull-xs-right" type="submit">
+              {{ title }}
+            </button>
+          </fieldset>
+        </form>
+      </div>
     </div>
-    <div>
-      Password: &nbsp;<input type="password" name="person_password" [(ngModel)]="person.password" placeholder="Enter Password">
-    </div>
-    <div>
-      <button type="submit" class="btn btn-primary" >Login</button>
-    </div>
-  </form>
+  </div>
 </div>
+<!-- <form>
+  <h2>Log In</h2>
+
+  <div *ngIf="errorMessage" style="padding: 20px; background-color: #ffeeee;">
+    {{ errorMessage }}
+  </div>
+
+  <div class="space">
+    <input
+      type="text"
+      [(ngModel)]="user.username"
+      name="username"
+      placeholder="Username"
+    />
+  </div>
+  <div class="space">
+    <input
+      type="password"
+      [(ngModel)]="user.password"
+      name="password"
+      placeholder="Password"
+    />
+  </div>
+  <div class="space"><button (click)="login()">Log In</button></div>
+</form> -->
