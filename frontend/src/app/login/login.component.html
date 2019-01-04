@@ -1,3 +1,13 @@
-<p>
-  login works!
-</p>
+<div>
+  <form (ngSubmit)="doLogin()">
+    <div>
+      Username: <input type="text" name="person_username" [(ngModel)]="person.username" placeholder="Enter Username" autocomplete="off">
+    </div>
+    <div>
+      Password: &nbsp;<input type="password" name="person_password" [(ngModel)]="person.password" placeholder="Enter Password">
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary" >Login</button>
+    </div>
+  </form>
+</div>
