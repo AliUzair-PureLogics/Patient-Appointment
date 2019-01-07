@@ -16,13 +16,37 @@ export class DataService {
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
-  constructor(private http: Http) {}
+  constructor(private http: Http) {
+    const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
+    console.log("DataService->constructor->myUserLocal: ", myUserLocal);
+    try {
+      const myUser: User = JSON.parse(myUserLocal);
+      if (myUser && myUser.token) {
+        this.currentUserSubject.next(myUser);
+        this.isAuthenticatedSubject.next(true);
+      } else {
+        this.doLogout();
+      }
+    } catch (error) {
+      this.doLogout();
+    }
+  }
 
-  setAuth(user: User) {
+  setAuth(user) {
     // Set current user data into observable
     this.currentUserSubject.next(user);
     // Set isAuthenticated to true
     this.isAuthenticatedSubject.next(true);
+    console.log('Setting local to ', JSON.stringify(user));
+    localStorage.setItem("doctor_patiend_loggedin_user", JSON.stringify(user));
+    const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
+    console.log("DataService->constructor->myUserLocal: ", myUserLocal);
+  }
+
+  doLogout() {
+    this.currentUserSubject.next(new User());
+    this.isAuthenticatedSubject.next(false);
+    localStorage.setItem("doctor_patiend_loggedin_user", '{}');
   }
 
   private setHeaders(): Headers {
@@ -35,11 +59,18 @@ export class DataService {
   }
 
   attemptAuth(type, credentials): Observable<User> {
-    const route = type === "login" ? "/login" : "/signup";
-    return this.post(route, { user: credentials }).map(data => {
-      this.setAuth(data.user);
-      return data;
-    });
+    const route = type === "login" ? "/login" : "/register";
+    return this.post(route, credentials).map(
+      data => {
+        this.setAuth(data);
+        console.log("Service Data ");
+        return data;
+      },
+      err => {
+        console.log("Service Error ");
+        return err;
+      }
+    );
   }
 
   getCurrentUser(): User {

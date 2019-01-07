@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   errors: Errors = new Errors();
   isSubmitting = false;
   authForm: FormGroup;
+  isAuthenticated;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,13 @@ export class LoginComponent implements OnInit {
         );
       }
     });
+    this.userService.isAuthenticated.subscribe(
+      res => (this.isAuthenticated = res)
+    );
+    if (this.isAuthenticated) {
+      // redirect to login
+      this.router.navigate(['']);
+    }
   }
 
   submitForm() {
@@ -55,8 +63,12 @@ export class LoginComponent implements OnInit {
 
     const credentials = this.authForm.value;
     this.userService.attemptAuth(this.authType, credentials).subscribe(
-      data => this.router.navigateByUrl("/"),
+      data => {
+        this.router.navigateByUrl("/");
+        console.log('Data: ', data);
+      },
       err => {
+        console.log('err: ', err);
         this.errors = err;
         this.isSubmitting = false;
       }

@@ -1,6 +1,24 @@
-<p>
-  Welcome
+
+<p *ngIf="isAuthenticated" class="loggedin-user">
+  Welcome User, <button (click)="doLogout()">LogOut</button>
 </p>
-<p>
-  <a routerLink="/login">Login</a>
-</p>
+
+<a routerLink="/new-appointment">
+  <button>Get New Appointment</button>
+</a>
+
+<div>
+  <h2>Upcoming Appointments</h2>
+  <ol>
+    <li>A</li>
+    <li>B</li>
+  </ol>
+</div>
+
+<div>
+  <h2>Previous Appointments</h2>
+  <ol>
+    <li>A</li>
+    <li>B</li>
+  </ol>
+</div>
