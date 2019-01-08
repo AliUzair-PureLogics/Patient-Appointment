@@ -3,37 +3,70 @@
 </p>
 
 <div class="tab">
-  <button
-    class="tablinks"
-    (click)="activeTab = 'list'"
-    [class.active]="activeTab == 'list'"
-  >
+  <button class="tablinks" (click)="activeTab = 'list'">
     Appointments List
   </button>
-  <button
-    class="tablinks"
-    (click)="activeTab = 'new'"
-    [class.active]="activeTab == 'new'"
-  >
-    New Appointment
-  </button>
+  <button class="tablinks" (click)="activeTab = 'new'">New Appointment</button>
 </div>
 <div *ngIf="activeTab == 'list'" id="list" class="tabcontent">
   <div>
     <h2>Upcoming Appointments</h2>
-    <ol>
-      <li>A</li>
-      <li>B</li>
-    </ol>
+    <ul>
+      <li *ngFor="let upAppointment of apponitments.upcoming">
+          {{ upAppointment.availabilityDay }} {{ upAppointment.availabilityDateFormatted }} at
+          time '{{ upAppointment.availabilityTime }}' with Doctor
+          "{{ upAppointment.doctorId.username }}"
+      </li>
+      <li *ngIf="apponitments.upcoming.length == 0">No Events</li>
+    </ul>
   </div>
 
   <div>
     <h2>Previous Appointments</h2>
-    <ol>
-      <li>A</li>
-      <li>B</li>
-    </ol>
+    <ul>
+      <li *ngFor="let preAppointment of apponitments.previous">
+          {{ preAppointment.availabilityDay }} {{ preAppointment.availabilityDateFormatted }} at
+          time '{{ preAppointment.availabilityTime }}' with Doctor
+          "{{ preAppointment.doctorId.username }}"
+      </li>
+      <li *ngIf="apponitments.previous.length == 0">No Events</li>
+    </ul>
   </div>
 </div>
 
-<div *ngIf="activeTab == 'new'" id="new" class="tabcontent"></div>
+<div *ngIf="activeTab == 'new'" id="new" class="tabcontent">
+  <form (ngSubmit)="submitAppointment()">
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Doctor</label>
+      <select
+        class="form-control"
+        name="exampleFormControlSelect1"
+        [(ngModel)]="appointment.doctorId"
+        (change)="getDoctorSlots($event.target.value)"
+      >
+        <option value="">Select Doctor</option>
+        <ng-container *ngFor="let doctor of doctorList">
+          <option [value]="doctor._id">{{ doctor.username }}</option>
+        </ng-container>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Slot</label>
+      <p *ngIf="doctorSlots.length == 0">No Slots</p>
+      <ng-container *ngFor="let slot of doctorSlots">
+        <div class="radio">
+          <label
+            ><input
+              type="radio"
+              name="optradio"
+              (change)="onSlotSelectionChange(slot)"
+            />
+            {{ slot.availabilityDay }} {{ slot.availabilityDateFormatted }} at
+            time '{{ slot.availabilityTime }}'</label
+          >
+        </div>
+      </ng-container>
+    </div>
+    <button type="submit" class="btn btn-success">Submit Appointment</button>
+  </form>
+</div>

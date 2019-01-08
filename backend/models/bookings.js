@@ -2,24 +2,22 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var BookingSchema   = new Schema({
-    patientName: {
-        type: string,
-        required:true
-    },
-    appointmentTime: {
+
+    availabilityDate: {
         type: Date,
         required:true
     },
-    doctorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor',
-        required: true
+    availabilityDay: {
+        type: String,
+        required:true
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }
+    availabilityTime: {
+        type: String,
+        required:true
+    },
+    doctorId: { type: Schema.Types.ObjectId, ref: 'User' },
+    patientId: { type: Schema.Types.ObjectId, ref: 'User' },
+    availabilityDateFormatted:String,
 });
 
 module.exports = mongoose.model('Booking', BookingSchema);

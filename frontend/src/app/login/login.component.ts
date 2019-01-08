@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     );
     if (this.isAuthenticated) {
       // redirect to login
-      this.router.navigate(['']);
+      this.router.navigate([""]);
     }
   }
 
@@ -64,9 +64,12 @@ export class LoginComponent implements OnInit {
     const credentials = this.authForm.value;
     this.userService.attemptAuth(this.authType, credentials).subscribe(
       data => {
+        console.log(data);
         this.router.navigateByUrl("/");
       },
       err => {
+        const errorMessage = "message" in err ? err.message : err;
+        alert(errorMessage);
         this.errors = err;
         this.isSubmitting = false;
       }

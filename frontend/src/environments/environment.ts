@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  api_url: "https://reqres.in/api"
+  api_url: "http://192.168.0.248:3000/api"
 };

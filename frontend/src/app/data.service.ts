@@ -19,9 +19,9 @@ export class DataService {
   constructor(private http: Http) {
     const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
     try {
-      const myUser: User = JSON.parse(myUserLocal);
-      if (myUser && myUser.token) {
-        this.currentUserSubject.next(myUser);
+      const localData = JSON.parse(myUserLocal);
+      if (localData && "token" in localData) {
+        this.currentUserSubject.next(localData);
         this.isAuthenticatedSubject.next(true);
       } else {
         this.doLogout();
@@ -37,29 +37,74 @@ export class DataService {
     // Set isAuthenticated to true
     this.isAuthenticatedSubject.next(true);
     localStorage.setItem("doctor_patiend_loggedin_user", JSON.stringify(user));
-    const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
   }
 
   doLogout() {
     this.currentUserSubject.next(new User());
     this.isAuthenticatedSubject.next(false);
-    localStorage.setItem("doctor_patiend_loggedin_user", '{}');
+    localStorage.setItem("doctor_patiend_loggedin_user", "{}");
   }
 
-  private setHeaders(): Headers {
+  private setHeaders(): any {
     const headersConfig = {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      Accept: "application/json",
+      Authorization: ''
     };
-
+    this.currentUser.subscribe(res => {
+      console.log("Headers: ", res);
+      headersConfig.Authorization = res.token;
+    });
     return new Headers(headersConfig);
   }
 
   attemptAuth(type, credentials): Observable<User> {
-    const route = type === "login" ? "/login" : "/register";
+    const route = type === "login" ? "/login" : "/signup";
     return this.post(route, credentials).map(
       data => {
         this.setAuth(data);
+        return data;
+      },
+      err => {
+        return err;
+      }
+    );
+  }
+  submitAppointment(appointment): Observable<User> {
+    return this.post("/new-slot", appointment).map(
+      data => {
+        return data;
+      },
+      err => {
+        return err;
+      }
+    );
+  }
+
+  loadAppointments(): Observable<any> {
+    return this.get("/myAppointments").map(
+      data => {
+        return data;
+      },
+      err => {
+        return err;
+      }
+    );
+  }
+
+  loadDoctors(): Observable<any> {
+    return this.get("/alldoctors").map(
+      data => {
+        return data;
+      },
+      err => {
+        return err;
+      }
+    );
+  }
+  loadDoctorSlots(doctorId): Observable<any> {
+    return this.get("/doctor-slots/" + doctorId).map(
+      data => {
         return data;
       },
       err => {
@@ -84,14 +129,24 @@ export class DataService {
       .catch(this.formatErrors)
       .map((res: Response) => res.json());
   }
+
+  get(path: string): Observable<any> {
+    return this.http
+      .get(`${environment.api_url}${path}`, {
+        headers: this.setHeaders()
+      })
+      .catch(this.formatErrors)
+      .map((res: Response) => res.json());
+  }
 }
 
 export class User {
   email: string;
   token: string;
   username: string;
-  bio: string;
-  image: string;
+  bio?: string;
+  image?: string;
+  name?: string;
 }
 
 export class Errors {
