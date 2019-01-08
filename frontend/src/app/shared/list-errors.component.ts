@@ -12,7 +12,6 @@ export class ListErrorsComponent {
   @Input()
   set errors(errorList: Errors) {
     this.formattedErrors = [];
-    console.log('errorList', errorList);
     if (errorList.errors) {
       for (let field in errorList.errors) {
         if (field) {

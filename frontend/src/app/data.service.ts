@@ -18,7 +18,6 @@ export class DataService {
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
   constructor(private http: Http) {
     const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
-    console.log("DataService->constructor->myUserLocal: ", myUserLocal);
     try {
       const myUser: User = JSON.parse(myUserLocal);
       if (myUser && myUser.token) {
@@ -37,10 +36,8 @@ export class DataService {
     this.currentUserSubject.next(user);
     // Set isAuthenticated to true
     this.isAuthenticatedSubject.next(true);
-    console.log('Setting local to ', JSON.stringify(user));
     localStorage.setItem("doctor_patiend_loggedin_user", JSON.stringify(user));
     const myUserLocal = localStorage.getItem("doctor_patiend_loggedin_user");
-    console.log("DataService->constructor->myUserLocal: ", myUserLocal);
   }
 
   doLogout() {
@@ -63,11 +60,9 @@ export class DataService {
     return this.post(route, credentials).map(
       data => {
         this.setAuth(data);
-        console.log("Service Data ");
         return data;
       },
       err => {
-        console.log("Service Error ");
         return err;
       }
     );
