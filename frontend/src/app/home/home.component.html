@@ -13,11 +13,15 @@
     <h2>Upcoming Appointments</h2>
     <ul>
       <li *ngFor="let upAppointment of apponitments.upcoming">
-          {{ upAppointment.availabilityDay }} {{ upAppointment.availabilityDateFormatted }} at
-          time '{{ upAppointment.availabilityTime }}' with Doctor
-          "{{ upAppointment.doctorId.username }}"
+        {{ upAppointment.availabilityDay }}
+        {{ upAppointment.availabilityDateFormatted }} at time '{{
+          upAppointment.availabilityTime
+        }}' with Doctor "{{ upAppointment.doctorId.username }}"
       </li>
-      <li *ngIf="apponitments.upcoming.length == 0">No Events</li>
+      <li *ngIf="!isLoadingAppointments && apponitments.upcoming.length == 0">
+        No Events
+      </li>
+      <li *ngIf="isLoadingAppointments">Loading...</li>
     </ul>
   </div>
 
@@ -25,48 +29,61 @@
     <h2>Previous Appointments</h2>
     <ul>
       <li *ngFor="let preAppointment of apponitments.previous">
-          {{ preAppointment.availabilityDay }} {{ preAppointment.availabilityDateFormatted }} at
-          time '{{ preAppointment.availabilityTime }}' with Doctor
-          "{{ preAppointment.doctorId.username }}"
+        {{ preAppointment.availabilityDay }}
+        {{ preAppointment.availabilityDateFormatted }} at time '{{
+          preAppointment.availabilityTime
+        }}' with Doctor "{{ preAppointment.doctorId.username }}"
       </li>
-      <li *ngIf="apponitments.previous.length == 0">No Events</li>
+      <li *ngIf="!isLoadingAppointments && apponitments.previous.length == 0">
+        No Events
+      </li>
+      <li *ngIf="isLoadingAppointments">Loading...</li>
     </ul>
   </div>
 </div>
 
 <div *ngIf="activeTab == 'new'" id="new" class="tabcontent">
-  <form (ngSubmit)="submitAppointment()">
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Doctor</label>
-      <select
-        class="form-control"
-        name="exampleFormControlSelect1"
-        [(ngModel)]="appointment.doctorId"
-        (change)="getDoctorSlots($event.target.value)"
-      >
-        <option value="">Select Doctor</option>
-        <ng-container *ngFor="let doctor of doctorList">
-          <option [value]="doctor._id">{{ doctor.username }}</option>
-        </ng-container>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Slot</label>
-      <p *ngIf="doctorSlots.length == 0">No Slots</p>
-      <ng-container *ngFor="let slot of doctorSlots">
-        <div class="radio">
-          <label
-            ><input
-              type="radio"
-              name="optradio"
-              (change)="onSlotSelectionChange(slot)"
-            />
-            {{ slot.availabilityDay }} {{ slot.availabilityDateFormatted }} at
-            time '{{ slot.availabilityTime }}'</label
+  <div class="row">
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+      <form (ngSubmit)="submitAppointment()">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Doctor</label>
+          <select
+            class="form-control"
+            name="exampleFormControlSelect1"
+            [(ngModel)]="appointment.doctorId"
+            (change)="getDoctorSlots($event.target.value)"
           >
+            <option value="">Select Doctor</option>
+            <ng-container *ngFor="let doctor of doctorList">
+              <option [value]="doctor._id">{{ doctor.username }}</option>
+            </ng-container>
+          </select>
         </div>
-      </ng-container>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Slot</label>
+          <p *ngIf="!isLoadingSlots && doctorSlots.length == 0">No Slots</p>
+          <p *ngIf="isLoadingSlots">Loading...</p>
+          <ng-container *ngFor="let slot of doctorSlots">
+            <div class="radio">
+              <label
+                ><input
+                  type="radio"
+                  name="optradio"
+                  (change)="onSlotSelectionChange(slot)"
+                />
+                {{ slot.availabilityDay }}
+                {{ slot.availabilityDateFormatted }} at time '{{
+                  slot.availabilityTime
+                }}'</label
+              >
+            </div>
+          </ng-container>
+        </div>
+        <button type="submit" class="btn btn-success">
+          Submit Appointment
+        </button>
+      </form>
     </div>
-    <button type="submit" class="btn btn-success">Submit Appointment</button>
-  </form>
+  </div>
 </div>

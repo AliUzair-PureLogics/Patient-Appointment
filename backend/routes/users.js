@@ -22,8 +22,10 @@ router.post('/signup', (req,res) => {
     reqData.password = bcrypt.hashSync(req.body.password,10);
     
     let user = new User(reqData);
-    // role will be number and for patient it is 2
-    user.role = 2;
+    if(!user.role){
+        // role will be number and for patient it is 2
+        user.role = 2;
+    }
 
     user.save((err,data)=>{
         
@@ -48,9 +50,8 @@ router.post('/signup', (req,res) => {
 });
 
 router.post('/login',(req,res) => {
-    console.log(req.body);
-    User.findOne( { $or:[ {'email':req.body.email}, {'username':req.body.email}]},(err,data) => {
-        console.log(err, data);
+    User.findOne( { $or:[ {'username':req.body.username}, {'username':req.body.email}]},(err,data) => {
+        console.log("login found user: ", data, req.body)
         if (err) {
             res.status(400).json({message:'Error while finding User!',err})
         }
@@ -104,7 +105,7 @@ router.get('/slots', (req,res)=> {
         }
     })
 })
-router.post('/new-slot', verifyToken, (req,res)=> {
+router.post('/new-appointment', verifyToken, (req,res)=> {
     req.body.patientId = req.user._id;
     let doc = new Booking(req.body);
     doc.save((err,data)=>{
@@ -261,7 +262,7 @@ router.get('/myAppointments', verifyToken, (req, res)=> {
                     data[index].availabilityDateFormatted = moment(item.availabilityDate).format('LL');
                 })
                 callback(err,data);
-            }).sort('availabilityDate').populate('doctorId');
+            }).sort('availabilityDate').populate('doctorId', 'username');
         },
         previous : function(callback){
             Booking.find({patientId: req.user._id, availabilityDate: {$lt: new Date()}},(err,data)=>{
@@ -270,7 +271,7 @@ router.get('/myAppointments', verifyToken, (req, res)=> {
                     data[index].availabilityDateFormatted = moment(item.availabilityDate).format('LL');
                 })
                 callback(err,data);
-            }).sort('availabilityDate').populate('doctorId');
+            }).sort('availabilityDate').populate('doctorId', 'username');
         }
     }, function(err, result){
         if(err){
@@ -284,7 +285,6 @@ router.get('/myAppointments', verifyToken, (req, res)=> {
 });
 
 function verifyToken(req,res,next){
-    console.log();
     jwt.verify(req.headers['authorization'], 'secret', function(err, decoded) {
         if (err || !"_id" in decoded) {
             return res.status(400).json({message:'Invalid Token!'});

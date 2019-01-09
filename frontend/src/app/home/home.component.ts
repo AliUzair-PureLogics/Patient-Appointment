@@ -12,6 +12,8 @@ export class HomeComponent implements OnInit {
   activeTab = "list";
   doctorList = [];
   doctorSlots = [];
+  isLoadingAppointments = true;
+  isLoadingSlots = false;
   apponitments = {
     upcoming: [],
     previous: []
@@ -42,13 +44,15 @@ export class HomeComponent implements OnInit {
   }
 
   loadAppointments() {
+    this.isLoadingAppointments = true;
     this.userService.loadAppointments().subscribe(
       res => {
-        console.log("Appointments: ", res);
+        this.isLoadingAppointments = false;
         this.apponitments.upcoming = res["upcoming"];
         this.apponitments.previous = res["previous"];
       },
       err => {
+        this.isLoadingAppointments = false;
         console.log(err);
       }
     );
@@ -57,7 +61,6 @@ export class HomeComponent implements OnInit {
   loadDoctors() {
     this.userService.loadDoctors().subscribe(
       res => {
-        console.log("doctors: ", res);
         this.doctorList = res;
       },
       err => {
@@ -67,13 +70,16 @@ export class HomeComponent implements OnInit {
   }
 
   getDoctorSlots(doctorId) {
+    this.isLoadingSlots = true;
     this.doctorSlots = [];
+    this.appointment.availabilityDate = '';
     this.userService.loadDoctorSlots(doctorId).subscribe(
       res => {
-        console.log("doctors slots: ", res);
+        this.isLoadingSlots = false;
         this.doctorSlots = res;
       },
       err => {
+        this.isLoadingSlots = false;
         console.log(err);
       }
     );
@@ -89,13 +95,12 @@ export class HomeComponent implements OnInit {
     if (!this.appointment.doctorId) {
       return alert("Please select doctor");
     }
-    if (!this.appointment.availabilityTime) {
+    if (!this.appointment.availabilityDate) {
       return alert("Please select Available slot");
     }
     this.userService.submitAppointment(this.appointment).subscribe(
       res => {
         this.loadAppointments();
-        console.log("submitAppointment: ", res);
         alert("Appointment has been created");
       },
       err => {

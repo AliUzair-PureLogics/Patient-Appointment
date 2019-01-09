@@ -52,7 +52,6 @@ export class DataService {
       Authorization: ''
     };
     this.currentUser.subscribe(res => {
-      console.log("Headers: ", res);
       headersConfig.Authorization = res.token;
     });
     return new Headers(headersConfig);
@@ -71,7 +70,7 @@ export class DataService {
     );
   }
   submitAppointment(appointment): Observable<User> {
-    return this.post("/new-slot", appointment).map(
+    return this.post("/new-appointment", appointment).map(
       data => {
         return data;
       },
