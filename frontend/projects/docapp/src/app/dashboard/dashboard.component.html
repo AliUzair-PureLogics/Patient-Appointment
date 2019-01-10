@@ -1,0 +1,32 @@
+<button class="btn btn-primary" *ngIf="!create" (click)="create = true">Create Slots</button>
+<button class="btn btn-primary" *ngIf="create" (click)="create = false">View Bookings</button>
+<div *ngIf="create">
+  <h3>Setup Booking Slots</h3>
+  <form>
+    <div class="form-group">
+      <label for="options">Select Days:</label>
+      <div *ngFor="let option of days">
+          <label>
+              <input type="checkbox"
+                    name="options"
+                    value="{{option.name}}"
+                    [(ngModel)]="option.check"/>
+              {{option.name}}
+          </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="hours">Availability hours:</label>
+      <input type="number" name="hours" [(ngModel)]="hours" max="6" min="1"/>       
+    </div>
+    <div class="form-group">
+      <label for="hours">Availability Time:</label>
+      <input type="text" name="time" [(ngModel)]="time"/>       
+    </div>
+    <button class="btn btn-primary" (click)="createSlots()">Create</button>
+  </form>
+</div>
+
+<div *ngIf="!create">
+  <h3>Upcomming Bookings</h3>
+</div>

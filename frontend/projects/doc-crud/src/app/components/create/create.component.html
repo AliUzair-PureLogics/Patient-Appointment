@@ -1,0 +1,48 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    {{ title }}
+  </div>
+  <div class="panel-body">
+    <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="col-md-4">Name</label>
+        <input type="text" class="form-control" formControlName="name" />
+      </div>
+      <div *ngIf="addForm.get('name').invalid && (addForm.get('name').dirty || addForm.get('name').touched)" class="alert alert-danger">
+        <div>
+          Name is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+          <label class="col-md-4">Userame</label>
+          <input type="text" class="form-control" formControlName="username" />
+        </div>
+        <div *ngIf="addForm.get('username').invalid && (addForm.get('username').dirty || addForm.get('username').touched)" class="alert alert-danger">
+          <div>
+            Username is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4">Password</label>
+            <input type="password" class="form-control" formControlName="password" />
+          </div>
+          <div *ngIf="addForm.get('password').invalid && (addForm.get('password').dirty || addForm.get('password').touched)" class="alert alert-danger">
+            <div>
+              Password is required.
+            </div>
+          </div>
+      
+        <div class="form-group">
+          <!-- <button (click)="addUser(name.value, address.value)" [disabled]="addForm.pristine || addForm.invalid" class="btn btn-primary">Add</button> -->
+          <button class="btn btn-primary" type="submit" [disabled]="addForm.pristine || addForm.invalid">Submit</button>
+        </div>
+    </form>
+    <div class="form-group" *ngIf="formSubmission">
+      <h3>New Admin Created successfully !</h3>
+      <h4>Name: {{ user.name }}</h4>
+      <h4>Userame: {{ user.username }} </h4>
+    </div>
+  </div>
+</div>
