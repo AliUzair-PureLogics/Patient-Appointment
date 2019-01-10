@@ -7,6 +7,8 @@
     Appointments List
   </button>
   <button class="tablinks" (click)="activeTab = 'new'">New Appointment</button>
+  <a routerLink="/doctor/dashboard"><button class="tablinks">Doctor</button></a>
+  <a routerLink="/admin"><button class="tablinks">Admin</button></a>
 </div>
 <div *ngIf="activeTab == 'list'" id="list" class="tabcontent">
   <div>

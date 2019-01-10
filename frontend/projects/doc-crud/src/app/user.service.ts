@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class UserService {
@@ -30,37 +30,36 @@ export class UserService {
   ];
 
   bookings = [
-    
     {
-      id: 1, 
-      patientName: 'Mehboob',
-      appointmentTime: '09-10-2020'
+      id: 1,
+      patientName: "Mehboob",
+      appointmentTime: "09-10-2020"
     },
     {
-      id: 2, 
-      patientName: 'Raza',
-      appointmentTime: '09-10-2021'
+      id: 2,
+      patientName: "Raza",
+      appointmentTime: "09-10-2021"
     },
     {
-      id: 3, 
-      patientName: 'Ali',
-      appointmentTime: '09-10-2022'
+      id: 3,
+      patientName: "Ali",
+      appointmentTime: "09-10-2022"
     }
   ];
 
-  constructor(private http: HttpClient,
-              private route: Router,) { 
-                
-             this.http.get(this.BASE_URL + '/allusers').subscribe( (res: any) => {
-                  this.users = res;
-              }, (error) => console.log(error) );
-            }
+  constructor(private http: HttpClient, private route: Router) {
+    this.http.get(this.BASE_URL + "/allusers").subscribe(
+      (res: any) => {
+        this.users = res;
+      },
+      error => console.log(error)
+    );
+  }
 
   roles = ["User", "admin"];
 
-  
   createAdmin(obj) {
-    const uri = this.BASE_URL + '/signup';
+    const uri = this.BASE_URL + "/signup";
     // const obj = {
     //   name: name,
     //   price: price
@@ -69,7 +68,6 @@ export class UserService {
     // let id = Math.random();
     // this.users.push({id, name, address});
     // this.route.navigate(['/index']);
-
   }
 
   editUser(id) {
@@ -80,18 +78,15 @@ export class UserService {
     //         .map(res => {
     //           return res;
     //         });
-    const user = this.users.find(
-      (s) => {
-        return s._id === id;
-      }
-    );
+    const user = this.users.find(s => {
+      return s._id === id;
+    });
 
     return user;
   }
 
   updateUser(name, address, id) {
     // const uri = 'http://localhost:4000/coins/update/' + id;
-
     // const obj = {
     //   name: name,
     //   price: price
@@ -100,7 +95,6 @@ export class UserService {
     //   .http
     //   .post(uri, obj)
     //   .subscribe(res => console.log('Done'));
-    
   }
 
   deleteUser(id) {
@@ -112,74 +106,57 @@ export class UserService {
     //         .map(res => {
     //           return res;
     //         });
-    const uri = this.BASE_URL + '/delete/'+ id+'/1';
+    const uri = this.BASE_URL + "/delete/" + id + "/1";
 
-    return this
-        .http
-        .delete(uri);
-  
+    return this.http.delete(uri);
   }
 
   viewUsers() {
-    const uri = this.BASE_URL + '/allusers';
+    const uri = this.BASE_URL + "/allusers";
 
-    return this
-        .http
-        .get(uri);
+    return this.http.get(uri);
   }
 
   viewDoctors() {
-    const uri = this.BASE_URL + '/alldoctors';
+    const uri = this.BASE_URL + "/alldoctors";
 
-    return this
-        .http
-        .get(uri);
+    return this.http.get(uri);
   }
 
   viewBookings() {
-    const uri = this.BASE_URL + '/allusers';
+    const uri = this.BASE_URL + "/allusers";
 
-    return this
-        .http
-        .get(uri);
+    return this.http.get(uri);
   }
 
   editBooking(id) {
-    const booking = this.bookings.find(
-      (s) => {
-        return s.id === id;
-      }
-    );
+    const booking = this.bookings.find(s => {
+      return s.id === id;
+    });
 
     return booking;
   }
 
   updateBooking(name, time, id) {
     console.log(name);
-    const booking = this.bookings.find(
-      (s) => {
-        return s.id === id;
-      }
-    );
+    const booking = this.bookings.find(s => {
+      return s.id === id;
+    });
 
-    this.bookings = this.bookings.map(
-      (data) => {
-        if(data.id===id) {
-          const newObj = {...data}
-          newObj.patientName = name;
-          newObj.appointmentTime = time;
-          console.log(newObj);
-          
-          return newObj;
-        }
-        return data;
+    this.bookings = this.bookings.map(data => {
+      if (data.id === id) {
+        const newObj = { ...data };
+        newObj.patientName = name;
+        newObj.appointmentTime = time;
+        console.log(newObj);
+
+        return newObj;
       }
-    )
+      return data;
+    });
 
     console.log(this.bookings);
-    
 
     // return booking;
   }
-
 }
