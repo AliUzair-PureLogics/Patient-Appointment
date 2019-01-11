@@ -13,20 +13,29 @@ import { ListErrorsComponent } from "./shared/list-errors.component";
 
 import { DataService } from "./data.service";
 
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { MyMaterialModule } from './material.module';
+import { RegisterComponent } from './register/register.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ListErrorsComponent
+    ListErrorsComponent,
+    RegisterComponent
   ],
-  exports: [ListErrorsComponent],
+  exports: [
+    ListErrorsComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MyMaterialModule
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

@@ -51,7 +51,6 @@ router.post('/signup', (req,res) => {
 
 router.post('/login',(req,res) => {
     User.findOne( { $or:[ {'username':req.body.username}, {'username':req.body.email}]},(err,data) => {
-        console.log("login found user: ", data, req.body)
         if (err) {
             res.status(400).json({message:'Error while finding User!',err})
         }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,11 +9,11 @@ import { DataService, Errors } from "../data.service";
 import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class RegisterComponent implements OnInit {
   errors: Errors = new Errors();
   authForm: FormGroup;
   isAuthenticated;
@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
   ) {
     // use FormBuilder to create a form group
     this.authForm = this.fb.group({
+      name: ["", Validators.required],
       username: ["", Validators.required],
       password: ["", Validators.required]
     });
@@ -41,12 +42,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  login() {
+  register() {
     this.isSubmitting = true;
     this.errors = new Errors();
 
     const credentials = this.authForm.value;
-    this.userService.attemptAuth('login', credentials).subscribe(
+    this.userService.attemptAuth('register', credentials).subscribe(
       data => {
         this.router.navigateByUrl("/");
       },

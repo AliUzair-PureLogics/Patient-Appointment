@@ -1,1 +1,13 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span><a routerLink="">HOME</a></span> <span class="spacer"></span>
+    <ng-container *ngIf="!isAuthenticated">
+      <a mat-button routerLink="/register">Register</a>
+      <a mat-button routerLink="/login">Login</a>
+    </ng-container>
+    <ng-container *ngIf="isAuthenticated">
+      <a mat-button (click)="doLogout()">Logout</a>
+    </ng-container>
+  </mat-toolbar-row>
+</mat-toolbar>
 <router-outlet></router-outlet>

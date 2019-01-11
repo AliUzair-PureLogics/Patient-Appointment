@@ -1,7 +1,17 @@
-<mat-toolbar> <span>LOGIN</span> </mat-toolbar>
+<mat-toolbar> <span>Registration</span> </mat-toolbar>
 <mat-card class="my-card">
   <mat-card-content>
-    <form class="my-form" [formGroup]="authForm" (ngSubmit)="login()">
+    <form class="my-form" [formGroup]="authForm" (ngSubmit)="register()">
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          placeholder="Name"
+          name="name"
+          formControlName="name"
+          required
+        />
+      </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Username</mat-label>
         <input
@@ -24,7 +34,7 @@
         />
       </mat-form-field>
       <mat-card-actions>
-        <button type="submit" mat-raised-button color="primary" [disabled]="isSubmitting">LOGIN</button>
+        <button mat-raised-button color="primary" [disabled]="isSubmitting">REGISTER</button>
       </mat-card-actions>
     </form>
     <mat-spinner [style.display]="isSubmitting ? 'block' : 'none'"></mat-spinner>

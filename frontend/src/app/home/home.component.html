@@ -1,89 +1,156 @@
-<p *ngIf="isAuthenticated" class="loggedin-user">
-  Welcome User, <button (click)="doLogout()">LogOut</button>
-</p>
+<mat-tab-group backgroundColor="accent" color="primary">
+  <mat-tab label="Appointments List">
+    <div class="container">
+      <h2>Upcoming Appointments</h2>
+      <mat-spinner *ngIf="isLoadingAppointments"></mat-spinner>
+      <table
+        mat-table
+        [dataSource]="apponitments.upcoming"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="availabilityDay">
+          <th mat-header-cell *matHeaderCellDef>Day</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityDay }}
+          </td>
+        </ng-container>
 
-<div class="tab">
-  <button class="tablinks" (click)="activeTab = 'list'">
-    Appointments List
-  </button>
-  <button class="tablinks" (click)="activeTab = 'new'">New Appointment</button>
-</div>
-<div *ngIf="activeTab == 'list'" id="list" class="tabcontent">
-  <div>
-    <h2>Upcoming Appointments</h2>
-    <ul>
-      <li *ngFor="let upAppointment of apponitments.upcoming">
-        {{ upAppointment.availabilityDay }}
-        {{ upAppointment.availabilityDateFormatted }} at time '{{
-          upAppointment.availabilityTime
-        }}' with Doctor "{{ upAppointment.doctorId.username }}"
-      </li>
-      <li *ngIf="!isLoadingAppointments && apponitments.upcoming.length == 0">
-        No Events
-      </li>
-      <li *ngIf="isLoadingAppointments">Loading...</li>
-    </ul>
-  </div>
+        <ng-container matColumnDef="availabilityDateFormatted">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityDateFormatted }}
+          </td>
+        </ng-container>
 
-  <div>
-    <h2>Previous Appointments</h2>
-    <ul>
-      <li *ngFor="let preAppointment of apponitments.previous">
-        {{ preAppointment.availabilityDay }}
-        {{ preAppointment.availabilityDateFormatted }} at time '{{
-          preAppointment.availabilityTime
-        }}' with Doctor "{{ preAppointment.doctorId.username }}"
-      </li>
-      <li *ngIf="!isLoadingAppointments && apponitments.previous.length == 0">
-        No Events
-      </li>
-      <li *ngIf="isLoadingAppointments">Loading...</li>
-    </ul>
-  </div>
-</div>
+        <ng-container matColumnDef="availabilityTime">
+          <th mat-header-cell *matHeaderCellDef>Time</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityTime }}
+          </td>
+        </ng-container>
 
-<div *ngIf="activeTab == 'new'" id="new" class="tabcontent">
-  <div class="row">
-    <div class="col-lg-4 col-sm-6 col-xs-12">
-      <form (ngSubmit)="submitAppointment()">
-        <div class="form-group">
-          <label for="exampleFormControlSelect1">Doctor</label>
-          <select
-            class="form-control"
-            name="exampleFormControlSelect1"
-            [(ngModel)]="appointment.doctorId"
-            (change)="getDoctorSlots($event.target.value)"
-          >
-            <option value="">Select Doctor</option>
-            <ng-container *ngFor="let doctor of doctorList">
-              <option [value]="doctor._id">{{ doctor.username }}</option>
-            </ng-container>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="exampleFormControlSelect1">Slot</label>
-          <p *ngIf="!isLoadingSlots && doctorSlots.length == 0">No Slots</p>
-          <p *ngIf="isLoadingSlots">Loading...</p>
-          <ng-container *ngFor="let slot of doctorSlots">
-            <div class="radio">
-              <label
-                ><input
-                  type="radio"
-                  name="optradio"
-                  (change)="onSlotSelectionChange(slot)"
-                />
-                {{ slot.availabilityDay }}
-                {{ slot.availabilityDateFormatted }} at time '{{
-                  slot.availabilityTime
-                }}'</label
-              >
-            </div>
-          </ng-container>
-        </div>
-        <button type="submit" class="btn btn-success">
-          Submit Appointment
-        </button>
-      </form>
+        <ng-container matColumnDef="doctorId">
+          <th mat-header-cell *matHeaderCellDef>Doctor</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.doctorId.username }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef>
+            No any upcoming events to show here.
+          </mat-footer-cell>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <mat-footer-row
+          *matFooterRowDef="['noData']"
+          [ngClass]="{
+            hide: !(!isLoadingAppointments && apponitments.upcoming.length == 0)
+          }"
+        ></mat-footer-row>
+      </table>
     </div>
-  </div>
-</div>
+    <mat-divider></mat-divider>
+    <br />
+    <div class="container">
+      <h2>Previous Appointments</h2>
+      <mat-spinner *ngIf="isLoadingAppointments"></mat-spinner>
+      <table
+        mat-table
+        [dataSource]="apponitments.previous"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="availabilityDay">
+          <th mat-header-cell *matHeaderCellDef>Day</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityDay }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="availabilityDateFormatted">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityDateFormatted }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="availabilityTime">
+          <th mat-header-cell *matHeaderCellDef>Time</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.availabilityTime }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="doctorId">
+          <th mat-header-cell *matHeaderCellDef>Doctor</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.doctorId.username }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef>
+            No any previous events to show here.
+          </mat-footer-cell>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <mat-footer-row
+          *matFooterRowDef="['noData']"
+          [ngClass]="{
+            hide: !(!isLoadingAppointments && apponitments.previous.length == 0)
+          }"
+        ></mat-footer-row>
+      </table>
+    </div>
+    <mat-divider></mat-divider>
+    <br />
+  </mat-tab>
+  <mat-tab label="New Appointment">
+    <div class="row">
+      <div class="col-lg-4 col-sm-6 col-xs-12">
+        <form (ngSubmit)="submitAppointment()">
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Doctor</label>
+            <select
+              class="form-control"
+              name="exampleFormControlSelect1"
+              [(ngModel)]="appointment.doctorId"
+              (change)="getDoctorSlots($event.target.value)"
+            >
+              <option value="">Select Doctor</option>
+              <ng-container *ngFor="let doctor of doctorList">
+                <option [value]="doctor._id">{{ doctor.username }}</option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Slot</label>
+            <p *ngIf="!isLoadingSlots && doctorSlots.length == 0">No Slots</p>
+            <p *ngIf="isLoadingSlots">Loading...</p>
+            <ng-container *ngFor="let slot of doctorSlots">
+              <div class="radio">
+                <label
+                  ><input
+                    type="radio"
+                    name="optradio"
+                    (change)="onSlotSelectionChange(slot)"
+                  />
+                  {{ slot.availabilityDay }}
+                  {{ slot.availabilityDateFormatted }} at time '{{
+                    slot.availabilityTime
+                  }}'</label
+                >
+              </div>
+            </ng-container>
+          </div>
+          <button type="submit" class="btn btn-success">
+            Submit Appointment
+          </button>
+        </form>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>

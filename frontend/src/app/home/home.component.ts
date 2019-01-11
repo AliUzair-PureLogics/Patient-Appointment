@@ -9,7 +9,6 @@ import { Router } from "@angular/router";
 })
 export class HomeComponent implements OnInit {
   isAuthenticated;
-  activeTab = "list";
   doctorList = [];
   doctorSlots = [];
   isLoadingAppointments = true;
@@ -24,6 +23,12 @@ export class HomeComponent implements OnInit {
     availabilityDay: "",
     availabilityTime: ""
   };
+  displayedColumns: string[] = [
+    'availabilityDay',
+    'availabilityDateFormatted',
+    'availabilityTime',
+    'doctorId'
+  ];
   constructor(private userService: DataService, private router: Router) {}
 
   ngOnInit() {
@@ -33,14 +38,10 @@ export class HomeComponent implements OnInit {
     if (!this.isAuthenticated) {
       // redirect to login
       this.router.navigate(["login"]);
+    } else {
+      this.loadAppointments();
+      this.loadDoctors();
     }
-    this.loadAppointments();
-    this.loadDoctors();
-  }
-
-  doLogout() {
-    this.userService.doLogout();
-    this.router.navigate(["login"]);
   }
 
   loadAppointments() {
@@ -72,7 +73,7 @@ export class HomeComponent implements OnInit {
   getDoctorSlots(doctorId) {
     this.isLoadingSlots = true;
     this.doctorSlots = [];
-    this.appointment.availabilityDate = '';
+    this.appointment.availabilityDate = "";
     this.userService.loadDoctorSlots(doctorId).subscribe(
       res => {
         this.isLoadingSlots = false;
